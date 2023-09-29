@@ -1,0 +1,139 @@
+<html>
+
+<head>
+    <title>Beskedcentralen</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            text-align: left;
+        }
+        th,
+        td {
+            min-width: 200px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Velkommen til Beskedcentralen</h1>
+    <h2>Personer</h2>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Navn</th>
+        </tr>
+        {% for p in people %}
+        <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <form action="/add_person" method="post">
+        <label for="name">Navn:</label>
+        <input type="text" name="name" id="name" required>
+        <br />
+        <br />
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Hosts</h2>
+    <p>URL skal være for en Ngrok-tunnel til en Raspberry Pi.</p>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>URL</th>
+        </tr>
+        {% for h in hosts %}
+        <tr>
+            <td>{{ h[0] }}</td>
+            <td>{{ h[1] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br />
+    <form action="/add_host" method="post">
+        <label for="url">URL:</label>
+        <input type="text" name="url" id="url" required>
+        <br />
+        <br />
+        <input type="submit" value="Submit">
+    </form>
+    <h2>Beskeder</h2>
+    <form action="/add_message" method="post">
+        <label for="sender">Afsender:</label>
+        <select name="sender" id="sender">
+            {% for p in people %}
+            <option value="{{ p[0] }}">{{ p[1] }}</option>
+            {% endfor %}
+        </select>
+        <br />
+        <br />
+        <label for="receiver">Modtager:</label>
+        <select name="receiver" id="receiver">
+            {% for h in hosts %}
+            <option value="{{ h[0] }}">{{ h[1] }}</option>
+            {% endfor %}
+        </select>
+        <br />
+        <br />
+        <label for="type">Vælg type:</label>
+        <select name="type" id="type">
+            <option value="message">Besked</option>
+            <option value="heart">Hjerte</option>
+            <option value="smiley">Smiley</option>
+        </select>
+        <p>Det er kun nødvendigt at skrive en besked hvis du har valgt besked som type.</p>
+        <label for="message">Besked:</label>
+        <input type="text" name="message" id="message">
+        <br />
+        <br />
+        <label for="color">Vælg farve:</label>
+        <select name="color" id="color">
+            <option value="blue">Blå</option>
+            <option value="green">Grøn</option>
+            <option value="yellow">Gul</option>
+            <option value="red">Rød</option>
+            <option value="pink">Pink</option>
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Afsender</th>
+            <th>Modtager</th>
+            <th>Tidspunkt</th>
+            <th>Type</th>
+            <th>Farve</th>
+            <th>Indhold</th>
+        </tr>
+        {% for m in messages %}
+        <tr>
+            <td>{{ m[0] }}</td>
+            {% for p in people %}
+                {% if p[0] == m[5] %}
+                <td>{{ p[1] }}</td>
+                {% endif %}
+            {% endfor %}
+            {% for h in hosts %}
+                {% if h[0] == m[6] %}
+                <td>{{ h[1] }}</td>
+                {% endif %}
+            {% endfor %}
+            <td>{{ m[4] }}</td>
+            <td>{{ m[1] }}</td>
+            <td>{{ m[2] }}</td>
+            <td>{{ m[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
